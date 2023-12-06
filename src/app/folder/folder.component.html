@@ -1,0 +1,59 @@
+<div class="flex flex-col cursor-pointer mt-2">
+  <div class="flex">
+    <svg (click)="toggleHandler(expandedFolder.uid)" height="24" version="1.1" width="24"
+      xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#"
+      xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#">
+      <g transform="translate(0 -1028.4)">
+        <path d="m2 1033.4c-1.1046 0-2 0.9-2 2v14c0 1.1 0.89543 2 2 2h20c1.105 0 2-0.9 2-2v-14c0-1.1-0.895-2-2-2h-20z"
+          fill="#2980b9" />
+        <path
+          d="m3 1029.4c-1.1046 0-2 0.9-2 2v14c0 1.1 0.8954 2 2 2h11 5 2c1.105 0 2-0.9 2-2v-9-3c0-1.1-0.895-2-2-2h-2-5-1l-3-2h-7z"
+          fill="#2980b9" />
+        <path d="m23 1042.4v-8c0-1.1-0.895-2-2-2h-11-5-2c-1.1046 0-2 0.9-2 2v8h22z" fill="#bdc3c7" />
+        <path
+          d="m2 1033.4c-1.1046 0-2 0.9-2 2v6 1 6c0 1.1 0.89543 2 2 2h20c1.105 0 2-0.9 2-2v-6-1-6c0-1.1-0.895-2-2-2h-20z"
+          fill="#3498db" />
+      </g>
+    </svg>
+    <div class="flex ml-3 space-x-2 items-center">
+      <span (click)="toggleHandler(expandedFolder.uid)" class="text-sm font-light text-gray-700">
+        {{expandedFolder.name}}
+      </span>
+    </div>
+  </div>
+
+  <div class="flex flex-col ml-9" *ngIf="expandedFolder.isExpanded && expandedFolder?.folders">
+    <ng-container *ngFor="let item of expandedFolder.folders">
+      <app-folder [rootFolder]="expandedFolder.folders" [expandedFolder]="item" [isExpanded]="item.isExpanded">
+      </app-folder>
+    </ng-container>
+  </div>
+  <div class="flex flex-col ml-9" *ngIf="expandedFolder.isExpanded">
+
+    <ng-template [ngIf]="expandedFolder.files.length">
+      <ul class="list-none">
+        <li *ngFor="let item of expandedFolder.files">
+          <app-file [name]='item.name'></app-file>
+        </li>
+      </ul>
+    </ng-template>
+    <div>
+      <div *ngIf="!isEditMode">
+        <a href="javascript:;" class="text-sm font-light text-sky-500/100 my-1 flex items-center" (click)="isEditMode = !isEditMode">
+          <svg class="feather feather-plus mr-2" fill="none" height="24" stroke="currentColor" stroke-linecap="round"
+            stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <line x1="12" x2="12" y1="5" y2="19" />
+            <line x1="5" x2="19" y1="12" y2="12" />
+          </svg>
+          Add folder
+        </a>
+      </div>
+      <div class="flex my-2 flex-col" *ngIf="isEditMode">
+        <app-add-edit-folder (name)="save($event, expandedFolder.uid)" (reset)="cancel($event)"
+          [uid]="expandedFolder.uid"></app-add-edit-folder>
+          <small class="text-sm font-light text-red-500/100 mt-1" *ngIf="showDuplicateError">Folder name already exists</small>
+      </div>
+    </div>
+
+  </div>
+</div>
